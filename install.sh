@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 PACKAGE_NAME="port-forward"
-VERSION="2.0.0"
+VERSION="1.0.0"
 INSTALL_PREFIX="/usr"
 CONFIG_DIR="/etc/port-forward"
 LOCALE_DIR="/usr/share/port-forward/locale"
@@ -101,18 +101,6 @@ install_dependencies() {
     return 0
 }
 
-# Create system user for running the service
-create_service_user() {
-    local username="portforward"
-
-    if ! id "$username" &>/dev/null; then
-        print_step "Creating system user: $username"
-        useradd -r -s /bin/false -M -d /nonexistent -c "Port Forward Service" "$username"
-        print_info "Created user: $username"
-    else
-        print_info "User $username already exists"
-    fi
-}
 
 # Grant capabilities to socat for privileged ports
 setup_capabilities() {
@@ -182,9 +170,13 @@ install_files() {
     chmod 644 "$CONFIG_DIR"/*.conf "$CONFIG_DIR"/*.example
     chmod 755 "/var/log/port-forward" "/run/port-forward"
 
-    # Set ownership for log directory
-    chown portforward:portforward "/var/log/port-forward" 2>/dev/null || true
-    chown portforward:portforward "/run/port-forward" 2>/dev/null || true
+    # Create user/dirs via systemd (if available)
+    if command -v systemd-sysusers >/dev/null 2>&1; then
+        systemd-sysusers 2>/dev/null || true
+    fi
+    if command -v systemd-tmpfiles >/dev/null 2>&1; then
+        systemd-tmpfiles --create 2>/dev/null || true
+    fi
 
     print_info "Files installed successfully"
 }
@@ -263,7 +255,6 @@ main_install() {
     fi
 
     # Create service user
-    create_service_user
 
     # Setup capabilities
     setup_capabilities "/usr/bin/socat"

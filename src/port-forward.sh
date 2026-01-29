@@ -1,5 +1,5 @@
 #!/bin/bash
-# Port Forward Manager v2.0
+# Port Forward Manager v1.0
 # Universal port forwarding using socat with multi-language support
 
 set -euo pipefail
@@ -388,7 +388,7 @@ cmd_reload() {
 # Show help
 show_help() {
     cat << EOF
-$(get_text "app_name") v2.0 - $(get_text "app_description")
+$(get_text "app_name") v1.0 - $(get_text "app_description")
 
 $(get_text "usage"): $0 {start|stop|restart|status|reload|help}
 
@@ -409,7 +409,7 @@ $(get_text "examples"):
   $0 status
   $0 reload
 
-$(get_text "documentation"): https://github.com/khvalera/port-forward
+$(get_text "documentation"): https://github.com/snuglinux/port-forward
 EOF
 }
 

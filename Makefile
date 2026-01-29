@@ -2,7 +2,7 @@
 
 # Variables
 PACKAGE_NAME := port-forward
-VERSION := 2.0.0
+VERSION := 1.0.0
 ARCH := $(shell uname -m)
 BUILD_DIR := build
 DIST_DIR := dist
@@ -52,7 +52,8 @@ build-deb: $(BUILD_DIR)
     Description: Universal port forwarding manager using socat
      Port Forward Manager provides a simple way to forward TCP/UDP ports
      using socat with systemd integration, logging, and multi-language support.
-    Depends: socat, jq, bash
+    Depends: socat, bash
+    Recommends: jq
     Recommends: systemd
     Section: net
     Priority: optional
@@ -69,9 +70,18 @@ build-deb: $(BUILD_DIR)
     # Reload systemd
     systemctl daemon-reload 2>/dev/null || true
 
-    # Create service user if it doesn't exist
-    if ! id portforward &>/dev/null; then
-       useradd -r -s /bin/false -M -d /nonexistent -c "Port Forward Service" portforward
+    # Create user/dirs via systemd if available
+    if command -v systemd-sysusers >/dev/null 2>&1; then
+       systemd-sysusers 2>/dev/null || true
+    else
+       # fallback
+       if ! id portforward &>/dev/null; then
+          useradd -r -s /bin/false -M -d /nonexistent -c "Port Forward Service" portforward
+       fi
+    fi
+
+    if command -v systemd-tmpfiles >/dev/null 2>&1; then
+       systemd-tmpfiles --create 2>/dev/null || true
     fi
 
     # Set capabilities for socat
@@ -79,11 +89,7 @@ build-deb: $(BUILD_DIR)
        setcap 'cap_net_bind_service=+ep' /usr/bin/socat 2>/dev/null || true
     fi
 
-    # Set permissions
-    chown portforward:portforward /var/log/port-forward 2>/dev/null || true
-    chown portforward:portforward /run/port-forward 2>/dev/null || true
-
-    exit 0
+        exit 0
     EOF
 
     chmod 755 $(BUILD_DIR)/$(PACKAGE_NAME)-$(VERSION)/DEBIAN/postinst

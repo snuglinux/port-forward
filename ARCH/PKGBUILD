@@ -5,9 +5,10 @@ pkgver=1.0.0
 pkgrel=1
 pkgdesc="Universal port forwarding manager using socat"
 arch=('any')
-url="https://github.com/khvalera/port-forward"
+url="https://github.com/snuglinux/port-forward"
 license=('MIT')
-depends=('socat' 'jq' 'bash')
+depends=('socat' 'bash')
+optdepends=('jq: localized messages (JSON locales)')
 makedepends=()
 source=("$pkgname-$pkgver.tar.gz")
 install=${pkgname}.install
@@ -34,6 +35,10 @@ package() {
 
     # Install systemd services
     install -Dm644 systemd/port-forward.service "$pkgdir/usr/lib/systemd/system/port-forward.service"
+
+    # Install sysusers and tmpfiles rules
+    install -Dm644 systemd/sysusers.d/port-forward.conf "$pkgdir/usr/lib/sysusers.d/port-forward.conf"
+    install -Dm644 systemd/tmpfiles.d/port-forward.conf "$pkgdir/usr/lib/tmpfiles.d/port-forward.conf"
 
     # Install documentation
     install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"

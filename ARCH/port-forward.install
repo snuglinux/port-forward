@@ -1,4 +1,6 @@
 post_install() {
+    systemd-sysusers 2>/dev/null || true
+    systemd-tmpfiles --create 2>/dev/null || true
     echo ""
     echo "Port Forward Manager v$pkgver installed!"
     echo ""
@@ -16,6 +18,8 @@ post_install() {
 }
 
 post_upgrade() {
+    systemd-sysusers 2>/dev/null || true
+    systemd-tmpfiles --create 2>/dev/null || true
     systemctl daemon-reload
     if systemctl is-active --quiet port-forward; then
         systemctl restart port-forward

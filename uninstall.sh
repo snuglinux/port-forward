@@ -69,6 +69,11 @@ remove_files() {
 
     # Remove systemd services
     rm -f "/usr/lib/systemd/system/port-forward.service"
+    rm -f "/usr/lib/sysusers.d/port-forward.conf" "/etc/sysusers.d/port-forward.conf" 2>/dev/null || true
+    rm -f "/usr/lib/tmpfiles.d/port-forward.conf" "/etc/tmpfiles.d/port-forward.conf" 2>/dev/null || true
+    if command -v systemd-tmpfiles >/dev/null 2>&1; then
+        systemd-tmpfiles --remove 2>/dev/null || true
+    fi
 
     # Remove capabilities from socat
     if command -v setcap >/dev/null 2>&1; then
