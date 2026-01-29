@@ -11,7 +11,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 # Configuration
-INSTALL_PREFIX="/usr/local"
+INSTALL_PREFIX="/usr"
 CONFIG_DIR="/etc/port-forward"
 LOCALE_DIR="/usr/share/port-forward/locale"
 

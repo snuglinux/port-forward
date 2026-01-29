@@ -10,9 +10,9 @@ license=('MIT')
 depends=('socat' 'bash')
 optdepends=('jq: localized messages (JSON locales)')
 makedepends=()
-source=("$pkgname-$pkgver.tar.gz")
+source=("https://github.com/snuglinux/port-forward/archive/refs/tags/$pkgver.tar.gz")
 install=${pkgname}.install
-sha256sums=('SKIP')
+sha256sums=('ce0448b98ad813bd2f6cd764db70e777bbc23ce22ee5408d78dd2ac3892c0bd7')
 backup=("etc/port-forward/port-forward.conf"
         "etc/port-forward/ports.conf")
 
