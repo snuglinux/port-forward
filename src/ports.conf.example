@@ -1,0 +1,35 @@
+# Port Forward Configuration File
+# Format:
+# <local_port> <destination_ip:destination_port> [tcp|udp]
+# or
+# <local_port> <destination_ip> <destination_port> [tcp|udp]
+
+# Examples:
+
+# SSH to virtual machine
+2222 192.168.122.10:22
+
+# Alternative format for SSH
+2223 192.168.122.10 22
+
+# Web server
+8080 192.168.122.20:80
+
+# HTTPS server
+8443 192.168.122.30:443
+
+# RDP (Remote Desktop)
+3389 192.168.122.40:3389
+
+# UDP example (DNS)
+53 192.168.122.50:53 udp
+
+# Multiple ports for same service (commented out)
+# 9000 192.168.122.60:9000
+# 9001 192.168.122.60:9001
+
+# Database access
+3306 192.168.122.70:3306
+
+# Custom application
+9999 192.168.122.80:9999

@@ -1,0 +1,56 @@
+[Unit]
+Description=Port Forward Manager
+Documentation=https://github.com/khvalera/port-forward
+After=network.target network-online.target
+Wants=network-online.target
+Requires=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+RuntimeDirectory=port-forward
+RuntimeDirectoryMode=0755
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/port-forward.sh start
+ExecStop=/usr/bin/port-forward.sh stop
+ExecReload=/usr/bin/port-forward.sh reload
+
+# User to run as (change to your needs)
+# Options: root, portforward, or your username
+User=portforward
+Group=portforward
+
+# Security hardening
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictRealtime=true
+RestrictNamespaces=true
+ReadWritePaths=/var/log/port-forward /run/port-forward
+ReadOnlyPaths=/etc/port-forward
+
+# Restart policy
+Restart=on-failure
+RestartSec=10
+
+# Timeouts
+TimeoutStartSec=30
+TimeoutStopSec=30
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=port-forward
+
+# Capabilities for binding to privileged ports (<1024)
+# Remove if not needed
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE CAP_NET_ADMIN
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target
